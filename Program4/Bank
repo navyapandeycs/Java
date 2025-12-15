@@ -1,0 +1,176 @@
+import java.util.Scanner;
+
+class Account {
+    protected String name;
+    protected int acc_no;
+    protected String acc_type;
+    protected double balance;
+
+    Scanner sc = new Scanner(System.in);
+
+    void getData() {
+        System.out.print("Enter Customer Name: ");
+        name = sc.nextLine();
+
+        System.out.print("Enter Account Number: ");
+        acc_no = sc.nextInt();
+
+        System.out.print("Enter Initial Balance: ");
+        balance = sc.nextDouble();
+    }
+
+    void deposit(double amt) {
+        if (amt > 0) {
+            balance += amt;
+            System.out.println("Amount Deposited: Rs." + amt);
+            System.out.println("Updated Balance: Rs." + balance);
+        } else {
+            System.out.println("Invalid deposit amount!");
+        }
+    }
+
+    void displayBalance() {
+        System.out.println("\n--- Account Details ---");
+        System.out.println("Account Holder: " + name);
+        System.out.println("Account Number: " + acc_no);
+        System.out.println("Account Type: " + acc_type);
+        System.out.println("Current Balance: Rs." + balance);
+    }
+}
+
+class Sav_Acct extends Account {
+    double rate = 5.0;
+    int time = 1;
+
+    void computeInterest() {
+        double interest = balance * Math.pow((1 + rate / 100), time) - balance;
+        balance += interest;
+        System.out.println("Interest of Rs." + String.format("%.2f", interest) + " added.");
+        System.out.println("Updated Balance: Rs." + balance);
+    }
+
+    void withdraw(double amt) {
+        if (amt <= balance) {
+            balance -= amt;
+            System.out.println("Amount Withdrawn: Rs." + amt);
+            System.out.println("Updated Balance: Rs." + balance);
+        } else {
+            System.out.println("Insufficient balance!");
+        }
+    }
+}
+
+class Cur_Acct extends Account {
+    double min_balance = 500.0;
+    double service_charge = 50.0;
+
+    void withdraw(double amt) {
+        if (amt <= balance) {
+            balance -= amt;
+            System.out.println("Amount Withdrawn: Rs." + amt);
+            checkMinBalance();
+        } else {
+            System.out.println("Insufficient balance!");
+        }
+    }
+
+    void checkMinBalance() {
+        if (balance < min_balance) {
+            balance -= service_charge;
+            System.out.println("Balance below minimum! Service charge Rs." + service_charge + " imposed.");
+        }
+        System.out.println("Updated Balance: Rs." + balance);
+    }
+}
+
+public class Bank {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        Sav_Acct sav = new Sav_Acct();
+        Cur_Acct cur = new Cur_Acct();
+
+        System.out.print("Enter account type (Savings/Current): ");
+        String type = sc.nextLine().toLowerCase();
+
+        if (type.equals("savings")) {
+            sav.acc_type = "Savings";   // ✅ FIX
+            sav.getData();
+
+            int choice;
+            do {
+                System.out.println("\n--- Savings Account Menu ---");
+                System.out.println("1. Deposit");
+                System.out.println("2. Withdraw");
+                System.out.println("3. Compute Interest");
+                System.out.println("4. Display Balance");
+                System.out.println("5. Exit");
+                System.out.print("Enter your choice: ");
+                choice = sc.nextInt();
+
+                switch (choice) {
+                    case 1:
+                        System.out.print("Enter amount to deposit: ");
+                        sav.deposit(sc.nextDouble());
+                        break;
+                    case 2:
+                        System.out.print("Enter amount to withdraw: ");
+                        sav.withdraw(sc.nextDouble());
+                        break;
+                    case 3:
+                        sav.computeInterest();
+                        break;
+                    case 4:
+                        sav.displayBalance();
+                        break;
+                    case 5:
+                        System.out.println("Thank you for banking with us!");
+                        break;
+                    default:
+                        System.out.println("Invalid choice!");
+                }
+            } while (choice != 5);
+        }
+
+        else if (type.equals("current")) {
+            cur.acc_type = "Current";   // ✅ FIX
+            cur.getData();
+
+            int choice;
+            do {
+                System.out.println("\n--- Current Account Menu ---");
+                System.out.println("1. Deposit");
+                System.out.println("2. Withdraw");
+                System.out.println("3. Display Balance");
+                System.out.println("4. Exit");
+                System.out.print("Enter your choice: ");
+                choice = sc.nextInt();
+
+                switch (choice) {
+                    case 1:
+                        System.out.print("Enter amount to deposit: ");
+                        cur.deposit(sc.nextDouble());
+                        break;
+                    case 2:
+                        System.out.print("Enter amount to withdraw: ");
+                        cur.withdraw(sc.nextDouble());
+                        break;
+                    case 3:
+                        cur.displayBalance();
+                        break;
+                    case 4:
+                        System.out.println("Thank you for banking with us!");
+                        break;
+                    default:
+                        System.out.println("Invalid choice!");
+                }
+            } while (choice != 4);
+        }
+
+        else {
+            System.out.println("Invalid account type!");
+        }
+
+        sc.close();
+    }
+}
