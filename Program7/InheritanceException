@@ -1,0 +1,49 @@
+class WrongAge extends Exception {
+    public WrongAge(String message) {
+        super(message);
+    }
+}
+
+class Father {
+    int fatherAge;
+    
+    Father(int age) throws WrongAge {
+        if (age < 0) {
+            throw new WrongAge("Father's age cannot be negative!");
+        }
+        this.fatherAge = age;
+        System.out.println("Father created with age: " + fatherAge);
+    }
+}
+
+class Son extends Father {
+    int sonAge;
+    
+    Son(int fatherAge, int sonAge) throws WrongAge {
+        super(fatherAge); 
+        if (sonAge >= fatherAge) {
+            throw new WrongAge("Son's age cannot be greater than or equal to Father's age!");
+        }
+        if (sonAge < 0) {
+            throw new WrongAge("Son's age cannot be negative!");
+        }
+        this.sonAge = sonAge;
+        System.out.println("Son created with age: " + sonAge);
+    }
+}
+
+public class InheritanceExceptionDemo {
+    public static void main(String[] args) {
+        try {
+            
+            Son s1 = new Son(50, 20); 
+            System.out.println("Object created successfully.");
+            
+            Son s2 = new Son(-40, 10);
+            // Son s3 = new Son(40, 40);
+        } catch (WrongAge e) {
+            System.out.println("Exception Occurred: " + e.getMessage());
+        }
+        System.out.println("Program execution completed.");
+    }
+}
